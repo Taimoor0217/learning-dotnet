@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Vidly",
+    "\\Vidly\\Controllers",
+    "\\Vidly\\Models",
+    "\\Vidly\\Models\\ViewModels",
+    "\\Vidly\\Views",
+    "\\Vidly\\Views\\Customer"
+  ],
+  "SelectedNode": "\\Vidly\\Controllers\\CustomerController.cs",
+  "PreviewInSolutionExplorer": false
+}

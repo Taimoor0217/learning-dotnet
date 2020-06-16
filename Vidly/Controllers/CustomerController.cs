@@ -9,6 +9,8 @@ using Vidly.Models;
 using Vidly1.Models;
 using Vidly1.Models.ViewModels;
 using Vidly.Models.ViewModels;
+using Microsoft.Ajax.Utilities;
+using System.Net;
 
 namespace Vidly1.Controllers
 {
@@ -78,20 +80,49 @@ namespace Vidly1.Controllers
         public ActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();
-            var viewModel = new NewCustomerViewModel
+            var viewModel = new CustomerFormViewModel
             {
                 MembershipTypes = membershipTypes
             };
-            return View(viewModel);
+            return View("CustomerForm" , viewModel);
         }
 
         [HttpPost] //This ensures that this method can only be accessed by an httppost call
-        public ActionResult Create(Customer customer) //COOL !  The model will automatically bind the request data to this model object, this is called model binding
+        public ActionResult Save(Customer customer) //COOL !  The model will automatically bind the request data to this model object, this is called model binding
         {
-            _context.Customers.Add(customer);
+
+            if(customer.Id == 0) //if this is a new customer
+            {
+                _context.Customers.Add(customer);
+            }
+            else
+            {
+                var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+                customerInDb.Name = customer.Name;
+                customerInDb.BirthDate = customer.BirthDate;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+                
+            }
             _context.SaveChanges();
 
             return RedirectToAction("Index" , "Customer");
         }
+
+        public ActionResult Edit(int id)
+        {
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            if (customer == null)
+                return HttpNotFound();
+
+            var viewModel = new CustomerFormViewModel
+            {
+                Customer = customer,
+
+                MembershipTypes = _context.MembershipTypes.ToList()
+            };
+            return View("CustomerForm" , viewModel);
+        }
+
     }
 }
